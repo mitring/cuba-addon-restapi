@@ -105,15 +105,16 @@ public class CubaUserAuthenticationProvider implements AuthenticationProvider {
 
             String login = (String) token.getPrincipal();
 
-            @SuppressWarnings("unchecked")
+            //noinspection unchecked
             Map<String, Object> details = (Map<String, Object>) authentication.getDetails();
 
             UserSession session;
             try {
-                LoginPasswordCredentials credentials = new LoginPasswordCredentials(login, (String) token.getCredentials(), null, details);
+                LoginPasswordCredentials credentials = new LoginPasswordCredentials(login, (String) token.getCredentials());
                 credentials.setIpAddress(ipAddress);
                 credentials.setClientType(ClientType.REST_API);
                 credentials.setClientInfo(makeClientInfo(request.getHeader(HttpHeaders.USER_AGENT)));
+                credentials.setParams(details);
 
                 //if the locale value is explicitly passed in the Accept-Language header then set its value to the
                 //credentials. Otherwise, the locale of the user should be used
