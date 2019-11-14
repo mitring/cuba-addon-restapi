@@ -16,11 +16,14 @@
 
 package com.haulmont.addon.restapi.api.service;
 
-import com.haulmont.addon.restapi.api.controllers.PermissionsController;
+import com.haulmont.addon.restapi.api.controllers.SecurityController;
 import com.haulmont.addon.restapi.api.exception.RestAPIException;
 import com.haulmont.addon.restapi.api.service.filter.data.PermissionInfo;
+import com.haulmont.addon.restapi.api.service.filter.data.RoleInfo;
+import com.haulmont.addon.restapi.api.service.filter.data.RolesInfo;
 import com.haulmont.cuba.core.global.UserSessionSource;
 import com.haulmont.cuba.security.entity.PermissionType;
+import com.haulmont.cuba.security.entity.User;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
@@ -31,10 +34,10 @@ import java.util.Map;
 
 /**
  * Class is used for getting current user permissions for the REST API. It contains a business logic required by the
- * {@link PermissionsController}
+ * {@link SecurityController}
  */
-@Component("restapi_PermissionsControllerManager")
-public class PermissionsControllerManager {
+@Component("restapi_SecurityControllerManager")
+public class SecurityControllerManager {
 
     @Inject
     protected UserSessionSource userSessionSource;
@@ -82,5 +85,19 @@ public class PermissionsControllerManager {
                 }
         }
         throw new RestAPIException("Cannot evaluate permission value", "", HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+
+    public RolesInfo getRolesInfo() {
+        RolesInfo rolesInfo = new RolesInfo();
+        rolesInfo.permissions = getPermissionInfos();
+
+        User user = userSessionSource.getUserSession().getCurrentOrSubstitutedUser();
+        user.getUserRoles().forEach(userRole -> {
+            RoleInfo roleInfo = new RoleInfo();
+            roleInfo.roleType = userRole.getRole().getType().name();
+            rolesInfo.roles.add(roleInfo);
+        });
+
+        return rolesInfo;
     }
 }
