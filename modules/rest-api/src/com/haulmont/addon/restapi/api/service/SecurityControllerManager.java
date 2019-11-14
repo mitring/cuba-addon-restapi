@@ -91,6 +91,7 @@ public class SecurityControllerManager {
         RolesInfo rolesInfo = new RolesInfo();
         rolesInfo.permissions = getPermissionInfos();
 
+        rolesInfo.roles = new ArrayList<>();
         User user = userSessionSource.getUserSession().getCurrentOrSubstitutedUser();
         user.getUserRoles().forEach(userRole -> {
             RoleInfo roleInfo = new RoleInfo();
