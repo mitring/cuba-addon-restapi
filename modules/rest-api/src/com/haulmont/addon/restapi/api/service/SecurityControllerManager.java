@@ -88,14 +88,21 @@ public class SecurityControllerManager {
     }
 
     public RolesInfo getRolesInfo() {
-        RolesInfo rolesInfo = new RolesInfo();
-        rolesInfo.permissions = getPermissionInfos();
 
+        RolesInfo rolesInfo = new RolesInfo();
         rolesInfo.roles = new ArrayList<>();
         User user = userSessionSource.getUserSession().getCurrentOrSubstitutedUser();
+
+        if (user == null || user.getUserRoles() == null) return rolesInfo;
+
+        rolesInfo.permissions = getPermissionInfos();
+
         user.getUserRoles().forEach(userRole -> {
             RoleInfo roleInfo = new RoleInfo();
-            roleInfo.roleType = userRole.getRole().getType().name();
+            roleInfo.roleType = userRole == null || userRole.getRole() == null || userRole.getRole().getType() == null
+                    ? ""
+                    : userRole.getRole().getType().name();
+
             rolesInfo.roles.add(roleInfo);
         });
 
