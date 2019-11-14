@@ -22,6 +22,7 @@ import com.haulmont.addon.restapi.rest.RestUserSessionInfo;
 import com.haulmont.addon.restapi.rest.ServerTokenStore;
 import com.haulmont.addon.restapi.entity.AccessToken;
 import com.haulmont.addon.restapi.entity.RefreshToken;
+import com.haulmont.addon.restapi.rest.RestUserSession;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
@@ -600,7 +601,7 @@ public class ServerTokenStoreImpl implements ServerTokenStore {
             try {
                 UserSession session = userSessions.get(sessionInfo.getId());
                 if (session != null) {
-                    AppContext.setSecurityContext(new SecurityContext(session));
+                    AppContext.setSecurityContext(new SecurityContext(new RestUserSession(session)));
                     try {
                         authenticationManager.logout();
 

@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 import com.haulmont.addon.restapi.api.common.RestAuthUtils;
 import com.haulmont.addon.restapi.api.config.RestApiConfig;
 import com.haulmont.addon.restapi.exception.RestApiAccessDeniedException;
+import com.haulmont.addon.restapi.rest.RestUserSession;
 import com.haulmont.cuba.client.sys.UsersRepository;
 import com.haulmont.cuba.core.global.*;
 import com.haulmont.cuba.core.sys.AppContext;
@@ -139,7 +140,7 @@ public class CubaUserAuthenticationProvider implements AuthenticationProvider {
                 throw new BadCredentialsException("Bad credentials");
             }
 
-            AppContext.setSecurityContext(new SecurityContext(session));
+            AppContext.setSecurityContext(new SecurityContext(new RestUserSession(session)));
 
             UsernamePasswordAuthenticationToken result = new UsernamePasswordAuthenticationToken(authentication.getPrincipal(),
                     authentication.getCredentials(), getRoleUserAuthorities(authentication));

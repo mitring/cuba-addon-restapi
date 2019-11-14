@@ -20,6 +20,7 @@ import com.google.common.base.Strings;
 import com.haulmont.addon.restapi.api.common.RestAuthUtils;
 import com.haulmont.addon.restapi.api.common.RestTokenMasker;
 import com.haulmont.addon.restapi.api.config.RestApiConfig;
+import com.haulmont.addon.restapi.rest.RestUserSession;
 import com.haulmont.addon.restapi.rest.RestUserSessionInfo;
 import com.haulmont.addon.restapi.rest.ServerTokenStore;
 import com.haulmont.cuba.core.global.ClientType;
@@ -223,7 +224,7 @@ public class ClientProxyTokenStore implements TokenStore {
 
         if (session != null) {
             serverTokenStore.putSessionInfo(tokenValue, new RestUserSessionInfo(session));
-            AppContext.setSecurityContext(new SecurityContext(session));
+            AppContext.setSecurityContext(new SecurityContext(new RestUserSession(session)));
         }
     }
 
